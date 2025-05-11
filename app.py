@@ -101,7 +101,7 @@ class Resistor:
 
         self.resistor_container = Frame(self.panel, bg="white", width=400, height=120)
         self.resistor_label = Label(self.panel, text="Resistor Value:", font=("Arial bold", 16), bg="white", fg="black")
-        self.resistor_value = Label(self.panel, text=f"{self.ohms} Ohms {self.tolerance*100}% {'' if self.ppm == 0 else (str(self.ppm)+' PPM')}", font=("Arial bold", 16), bg="white", fg="black")
+        self.resistor_value = Label(self.panel, text=f"-", font=("Arial bold", 16), bg="white", fg="black")
     
         self.resistor_container.place(relx=0.5, y=200, anchor="center")
         self.resistor_label.place(relx=0.5, y=350, anchor="center")
@@ -130,117 +130,103 @@ class Resistor:
         self.band4 = Frame(self.resistor_foot, bg="PeachPuff1", width=20, height=120)
         self.band4.place(x=30, y=0, anchor="nw")
         
-    
-
-
-
-        
-
     def update(self, mode):
+        try:
+            if mode == 'values':
+                digit_arr = str(self.ohms).strip('0')
+                c = len(digit_arr)
+                mult = len(str(self.ohms))-len(digit_arr)
 
-        if mode == 'values':
-            digit_arr = str(self.ohms).strip('0')
-            c = len(digit_arr)
-            mult = len(str(self.ohms))-len(digit_arr)
+                if c > 3 or c == 0:
+                    raise ValueError("Invalid resistor value")
+                if self.band == 4 and c > 2:
+                    raise ValueError("Invalid resistor value for 4-band resistor")
 
-            if c > 3 or c == 0:
-                raise ValueError("Invalid resistor value")
-            if self.band == 4 and c > 2:
-                raise ValueError("Invalid resistor value for 4-band resistor")
+                if c == 1 and self.band == 4:
+                    mult -= 1
+                if c == 1 and not self.band == 4:
+                    mult -= 2
+                if c == 2 and not self.band == 4:
+                    mult -= 1
 
-            if c == 1 and self.band == 4:
-                mult -= 1
-            if c == 1 and not self.band == 4:
-                mult -= 2
-            if c == 2 and not self.band == 4:
-                mult -= 1
+                # Helper function to safely get digit or 0 if out of bounds
+                def safe_get(arr, index):
+                    return arr[index] if index < len(arr) else 0
 
-            # Helper function to safely get digit or 0 if out of bounds
-            def safe_get(arr, index):
-                return arr[index] if index < len(arr) else 0
-
-            if self.band == 4:
-                self.band_values = [
-                    int(safe_get(digit_arr, 0)),
-                    int(safe_get(digit_arr, 1)),
-                    10**mult,
-                    self.tolerance,
-                    -1,
-                    -1
-                ]
-            else:
-                self.band_values = [
-                    int(safe_get(digit_arr, 0)),
-                    int(safe_get(digit_arr, 1)),
-                    int(safe_get(digit_arr, 2)),
-                    10**mult,
-                    self.tolerance,
-                    self.ppm
-                ]
-
-
-
-            print(self.band_values, self.band, mult)
-            # if self.band == 4:
-            #     if c == 1:
+                if self.band == 4:
+                    self.band_values = [
+                        int(safe_get(digit_arr, 0)),
+                        int(safe_get(digit_arr, 1)),
+                        10**mult,
+                        self.tolerance,
+                        -1,
+                        -1
+                    ]
+                else:
+                    self.band_values = [
+                        int(safe_get(digit_arr, 0)),
+                        int(safe_get(digit_arr, 1)),
+                        int(safe_get(digit_arr, 2)),
+                        10**mult,
+                        self.tolerance,
+                        self.ppm
+                    ]
 
 
-     
 
-        
-        
-        if self.band == 4:
-            self.band1.config(bg=self.band_colors_dict[self.band_values[0]] if self.band_values[0] != -1 else "PeachPuff1")
-            self.band2.config(bg=self.band_colors_dict[self.band_values[1]] if self.band_values[1] != -1 else "PeachPuff1")
-            self.band3.config(bg=self.band_multipliers_dict[self.band_values[2]] if self.band_values[2] != -1 else "PeachPuff1")
-            self.band4.config(bg=self.band_tolerance_dict[self.band_values[3]] if self.band_values[3] != -1 else "PeachPuff1")
-            self.band5.place_forget()
-            self.band6.place_forget()
-
-            self.ohms_temp = (self.band_values[0] * 10 + self.band_values[1]) * self.band_values[2]
-            self.tolerance_temp = self.band_values[3]
-            self.ppm_temp = -1
-
-        if self.band == 5:
-            self.band1.config(bg=self.band_colors_dict[self.band_values[0]] if self.band_values[0] != -1 else "PeachPuff1")
-            self.band2.config(bg=self.band_colors_dict[self.band_values[1]] if self.band_values[1] != -1 else "PeachPuff1")
-            self.band5.config(bg=self.band_colors_dict[self.band_values[2]] if self.band_values[2] != -1 else "PeachPuff1")
-            self.band3.config(bg=self.band_multipliers_dict[self.band_values[3]] if self.band_values[3] != -1 else "PeachPuff1")
-            self.band4.config(bg=self.band_tolerance_dict[self.band_values[4]] if self.band_values[4] != -1 else "PeachPuff1")
-            self.band5.place(x=70, y=0, anchor="nw")
-            self.band6.place_forget()
-
-            self.ohms_temp = (self.band_values[0] * 100 + self.band_values[1] * 10 + self.band_values[2]) * self.band_values[3]
-            self.tolerance_temp = self.band_values[4]
-            self.ppm_temp = -1
-
-        if self.band == 6:
-            self.band1.config(bg=self.band_colors_dict[self.band_values[0]] if self.band_values[0] != -1 else "PeachPuff1")
-            self.band2.config(bg=self.band_colors_dict[self.band_values[1]] if self.band_values[1] != -1 else "PeachPuff1")
-            self.band5.config(bg=self.band_colors_dict[self.band_values[2]] if self.band_values[2] != -1 else "PeachPuff1")
-            self.band3.config(bg=self.band_multipliers_dict[self.band_values[3]] if self.band_values[3] != -1 else "PeachPuff1")
-            self.band6.config(bg=self.band_tolerance_dict[self.band_values[4]] if self.band_values[4] != -1 else "PeachPuff1")
-            self.band4.config(bg=self.band_ppm_dict[self.band_values[5]] if self.band_values[5] != -1 else "PeachPuff1")
-            self.band5.place(x=70, y=0, anchor="nw")
-            self.band6.place(x=190, y=0, anchor="nw")
-
-            self.ohms_temp = (self.band_values[0] * 100 + self.band_values[1] * 10 + self.band_values[2]) * self.band_values[3]
-            self.tolerance_temp = self.band_values[4]
-            self.ppm_temp = self.band_values[5]
-
-        self.ohms_simplified = str(self.ohms_temp)
-        for k in self.band_value_prefix_dict.keys():
-            if self.ohms_temp/k > 1 and self.ohms/k < 1000:
-                self.ohms_simplified = str(self.ohms_temp/k) + ' ' + self.band_value_prefix_dict[k]
-
-        self.resistor_value.config(text=f"{self.ohms_simplified} Ohms {self.tolerance_temp*100}% Tolerance {'' if self.ppm_temp == -1 else (str(self.ppm_temp)+' PPM')}")
-
+                print(self.band_values, self.band, mult)
+                # if self.band == 4:
+                #     if c == 1:
             
+            if self.band == 4:
+                self.band1.config(bg=self.band_colors_dict[self.band_values[0]] if self.band_values[0] != -1 else "PeachPuff1")
+                self.band2.config(bg=self.band_colors_dict[self.band_values[1]] if self.band_values[1] != -1 else "PeachPuff1")
+                self.band3.config(bg=self.band_multipliers_dict[self.band_values[2]] if self.band_values[2] != -1 else "PeachPuff1")
+                self.band4.config(bg=self.band_tolerance_dict[self.band_values[3]] if self.band_values[3] != -1 else "PeachPuff1")
+                self.band5.place_forget()
+                self.band6.place_forget()
 
+                self.ohms_temp = (self.band_values[0] * 10 + self.band_values[1]) * self.band_values[2]
+                self.tolerance_temp = self.band_values[3]
+                self.ppm_temp = -1
 
+            if self.band == 5:
+                self.band1.config(bg=self.band_colors_dict[self.band_values[0]] if self.band_values[0] != -1 else "PeachPuff1")
+                self.band2.config(bg=self.band_colors_dict[self.band_values[1]] if self.band_values[1] != -1 else "PeachPuff1")
+                self.band5.config(bg=self.band_colors_dict[self.band_values[2]] if self.band_values[2] != -1 else "PeachPuff1")
+                self.band3.config(bg=self.band_multipliers_dict[self.band_values[3]] if self.band_values[3] != -1 else "PeachPuff1")
+                self.band4.config(bg=self.band_tolerance_dict[self.band_values[4]] if self.band_values[4] != -1 else "PeachPuff1")
+                self.band5.place(x=70, y=0, anchor="nw")
+                self.band6.place_forget()
+
+                self.ohms_temp = (self.band_values[0] * 100 + self.band_values[1] * 10 + self.band_values[2]) * self.band_values[3]
+                self.tolerance_temp = self.band_values[4]
+                self.ppm_temp = -1
+
+            if self.band == 6:
+                self.band1.config(bg=self.band_colors_dict[self.band_values[0]] if self.band_values[0] != -1 else "PeachPuff1")
+                self.band2.config(bg=self.band_colors_dict[self.band_values[1]] if self.band_values[1] != -1 else "PeachPuff1")
+                self.band5.config(bg=self.band_colors_dict[self.band_values[2]] if self.band_values[2] != -1 else "PeachPuff1")
+                self.band3.config(bg=self.band_multipliers_dict[self.band_values[3]] if self.band_values[3] != -1 else "PeachPuff1")
+                self.band6.config(bg=self.band_tolerance_dict[self.band_values[4]] if self.band_values[4] != -1 else "PeachPuff1")
+                self.band4.config(bg=self.band_ppm_dict[self.band_values[5]] if self.band_values[5] != -1 else "PeachPuff1")
+                self.band5.place(x=70, y=0, anchor="nw")
+                self.band6.place(x=190, y=0, anchor="nw")
+
+                self.ohms_temp = (self.band_values[0] * 100 + self.band_values[1] * 10 + self.band_values[2]) * self.band_values[3]
+                self.tolerance_temp = self.band_values[4]
+                self.ppm_temp = self.band_values[5]
+
+            self.ohms_simplified = str(self.ohms_temp)
+            for k in self.band_value_prefix_dict.keys():
+                if (self.ohms_temp/k > 1 and self.ohms_temp/k < 1000) or self.ohms_temp/k == 1:
+                    self.ohms_simplified = str(self.ohms_temp/k) + ' ' + self.band_value_prefix_dict[k]
+            self.resistor_value.config(text=f"{self.ohms_simplified} Ohms {self.tolerance_temp*100}% Tolerance {'' if self.ppm_temp == -1 else (str(self.ppm_temp)+' PPM')}")
+        except Exception as e:
+            self.resistor_value.config(text="Error: "+str(e))
+    
     def show(self):
         self.panel.place(x=500, y=200, anchor="nw")
-        
         
     def hide(self):
         self.panel.place_forget()
@@ -258,8 +244,70 @@ resistor.ppm = 10
 
 
 
+class InputField:
+
+    def __init__(self, container):
+        self.panel = Frame(container, bg="violet", width=500, height=600)
+        self.input_container = Frame(self.panel, bg="gray", width=420, height=540)
+        self.input_container.place(relx=0.5,rely=0.5, anchor="center")
+
+        resistance_label = Label(self.input_container, text="Resistance", font=("Arial bold", 12), fg="black") 
+        resistance_label.place(x=10,y=20,anchor='nw')
+
+        self.res=StringVar()
+        self.resistance_entry = Entry(self.input_container,textvariable = self.res, font=('calibre',16, 'bold'), width=12)
+        self.resistance_entry.place(x=10,y=50,anchor='nw')
+
+        tolerance_label = Label(self.input_container, text="Tolerance (%)", font=("Arial bold", 12), fg="black") 
+        tolerance_label.place(x=180,y=20,anchor='nw')
+
+        self.tol=StringVar()
+        self.tolerance_entry = Entry(self.input_container,textvariable = self.tol, font=('calibre',16, 'bold'), width=10)
+        self.tolerance_entry.place(x=180,y=50,anchor='nw')
+
+        ppm_label = Label(self.input_container, text="PPM", font=("Arial bold", 12), fg="black") 
+        ppm_label.place(x=325,y=20,anchor='nw')
+
+        self.p=StringVar()
+        self.ppm_entry = Entry(self.input_container,textvariable = self.p, font=('calibre',16, 'bold'), width=6)
+        self.ppm_entry.place(x=325,y=50,anchor='nw')
+
+       
+
+        
+
+        
 
 
+        self.submit_button = Button(self.input_container, text="Enter", command=self.submit, font=("Arial", 12), bg="red", height=1, width=16)
+        self.submit_button.place(relx=0.5, y=500, anchor="center")
+        
+    
+    def submit(self):
+        try:
+            resistor.ohms = int(self.res.get())
+            resistor.tolerance = float(self.tol.get())/100
+            
+        except Exception as e:
+            resistor.ohms = 0
+            resistor.tolerance = 0
+        try:
+            resistor.ppm = float(self.p.get())
+        except Exception as e:
+            resistor.ppm = -1
+        resistor.update('values')
+        resistor.show()
+
+
+    def show(self):
+        self.panel.place(x=0, y=200, anchor="nw")
+        
+    def hide(self):
+        self.panel.place_forget()
+
+
+input_field = InputField(main_container)
+input_field.show()
 
 
 ############ Buttons ############
