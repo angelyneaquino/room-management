@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import ttk as TTK
 
 # Create a window
 window = Tk()
@@ -130,7 +131,7 @@ class Resistor:
         self.band4 = Frame(self.resistor_foot, bg="PeachPuff1", width=20, height=120)
         self.band4.place(x=30, y=0, anchor="nw")
         
-    def update(self, mode):
+    def update(self, mode = "band"):
         try:
             if mode == 'values':
                 digit_arr = str(self.ohms).strip('0')
@@ -238,17 +239,11 @@ class Resistor:
 resistor = Resistor(main_container)
 resistor.show()
 
-resistor.ohms = 11000
-resistor.tolerance = 0.05
-resistor.ppm = 10
-
-
-
 class InputField:
 
     def __init__(self, container):
         self.panel = Frame(container, bg="violet", width=500, height=600)
-        self.input_container = Frame(self.panel, bg="gray", width=420, height=540)
+        self.input_container = Frame(self.panel, bg="gray", width=420, height=570)
         self.input_container.place(relx=0.5,rely=0.5, anchor="center")
 
         resistance_label = Label(self.input_container, text="Resistance", font=("Arial bold", 12), fg="black") 
@@ -272,21 +267,146 @@ class InputField:
         self.ppm_entry = Entry(self.input_container,textvariable = self.p, font=('calibre',16, 'bold'), width=6)
         self.ppm_entry.place(x=325,y=50,anchor='nw')
 
-       
+        self.value_list =  ("0 - Black",
+            "1 - Brown",
+            "2 - Red",
+            "3 - Orange",
+            "4 - Yellow",
+            "5 - Green",
+            "6 - Blue",
+            "7 - Violet",
+            "8 - Gray",
+            "9 - White")
+        
+        self.multiplier_list = ("1 - Black",
+            "10 - Brown",
+            "100 - Red",
+            "1000 - Orange",
+            "10000 - Yellow",
+            "100000 - Green",
+            "1000000 - Blue",
+            "10000000 - Violet",
+            "100000000 - Gray",
+            "1000000000 - White",
+            "0.1 - Gold",
+            "0.01 - Silver")
+        
+        self.tolerance_list = ("0.01 - Brown",
+            "0.02 - Red",
+            "0.005 - Green",
+            "0.0025 - Blue",
+            "0.001 - Violet",
+            "0.0005 - Gray",
+            "0.05 - Gold",
+            "0.1 - Silver")
+        
+        self.ppm_list = ("100 - brown",
+            "50 - red",
+            "15 - orange",
+            "25 - yellow",
+            "10 - blue",
+            "5 - violet")
 
+        self.label1 = Label(self.input_container, text="Band 1 Color", font=("Arial bold", 12), fg="black") 
+        self.label1.place(x=10,y=90,anchor='nw')
+        self.e1=StringVar()
+        self.entry1 = TTK.Combobox(self.input_container,textvariable = self.e1, font=('calibre',16, 'bold'), width=31)
+        self.entry1.place(x=10,y=120,anchor='nw')
+        self.entry1['values'] = self.value_list
+        
+        self.label2 = Label(self.input_container, text="Band 2 Color", font=("Arial bold", 12), fg="black") 
+        self.label2.place(x=10,y=160,anchor='nw')
+        self.e2=StringVar()
+        self.entry2 = TTK.Combobox(self.input_container,textvariable = self.e2, font=('calibre',16, 'bold'), width=31)
+        self.entry2.place(x=10,y=190,anchor='nw')
+        self.entry2['values'] = self.value_list
+        
+        self.label3 = Label(self.input_container, text="Band 3 Color", font=("Arial bold", 12), fg="black") 
+        self.label3.place(x=10,y=230,anchor='nw')
+        self.e3=StringVar()
+        self.entry3 = TTK.Combobox(self.input_container,textvariable = self.e3, font=('calibre',16, 'bold'), width=31)
+        self.entry3.place(x=10,y=260,anchor='nw')
+        self.entry3['values'] = self.multiplier_list 
+        
+        self.label4 = Label(self.input_container, text="Band 4 Color", font=("Arial bold", 12), fg="black") 
+        self.label4.place(x=10,y=300,anchor='nw')
+        self.e4=StringVar()
+        self.entry4 = TTK.Combobox(self.input_container,textvariable = self.e4, font=('calibre',16, 'bold'), width=31)
+        self.entry4.place(x=10,y=330,anchor='nw')
+        self.entry4['values'] =  self.tolerance_list
+        
+        self.label5 = Label(self.input_container, text="Band 5 Color", font=("Arial bold", 12), fg="black") 
+        # label5.place(x=10,y=370,anchor='nw')
+        self.e5=StringVar()
+        self.entry5 = TTK.Combobox(self.input_container,textvariable = self.e5, font=('calibre',16, 'bold'), width=31)
+        # self.entry5.place(x=10,y=400,anchor='nw')
+        # self.entry5['values'] = ("0 - black",
+        #     "1 - Brown",
+        #     "2 - Red",
+        #     "3 - Orange",
+        #     "4 - Yellow",
+        #     "5 - Green",
+        #     "6 - Blue",
+        #     "7 - Violet",
+        #     "8 - Gray",
+        #     "9 - White") 
+        
+        self.label6 = Label(self.input_container, text="Band 6 Color", font=("Arial bold", 12), fg="black") 
+        # label6.place(x=10,y=440,anchor='nw')
+        self.e6=StringVar()
+        self.entry6 = TTK.Combobox(self.input_container,textvariable = self.e6, font=('calibre',16, 'bold'), width=31)
+        # self.entry6.place(x=10,y=470,anchor='nw')
+        # self.entry6['values'] = ("100 - Brown",
+        #     "50 - Red",
+        #     "15 - Orange",
+        #     "25 - Yellow",
+        #     "10 - Blue",
+        #     "5 - Violet") 
         
 
         
 
 
         self.submit_button = Button(self.input_container, text="Enter", command=self.submit, font=("Arial", 12), bg="red", height=1, width=16)
-        self.submit_button.place(relx=0.5, y=500, anchor="center")
+        self.submit_button.place(relx=0.5, y=540, anchor="center")
+
+    def clear_dropdown(self):
+            self.e1.set("")
+            self.e2.set("")
+            self.e3.set("")
+            self.e4.set("")
+            self.e5.set("")
+            self.e6.set("")
         
     
     def submit(self):
+        m = 'values'
+        
         try:
-            resistor.ohms = int(self.res.get())
-            resistor.tolerance = float(self.tol.get())/100
+            if not self.res.get() == "":
+                resistor.ohms = int(self.res.get())
+                resistor.tolerance = float(self.tol.get())/100
+
+                self.clear_dropdown()
+            else:
+                def safe_number(value):
+                    try:
+                        part = value.split('-')[0].strip()
+                        if not part:
+                            return -1
+                        number = float(part)
+                        return int(number) if number.is_integer() else number
+                    except (ValueError, AttributeError):
+                        return -1
+                v1 = safe_number(self.e1.get().split('-')[0].strip())
+                v2 = safe_number(self.e2.get().split('-')[0].strip())
+                v3 = safe_number(self.e3.get().split('-')[0].strip())
+                v4 = safe_number(self.e4.get().split('-')[0].strip())
+                v5 = safe_number(self.e5.get().split('-')[0].strip())
+                v6 = safe_number(self.e6.get().split('-')[0].strip())
+                # print(v1,v2,v3,v4,v5,v6)
+                resistor.band_values = [v1,v2,v3,v4,v5,v6]
+                m = 'band'
             
         except Exception as e:
             resistor.ohms = 0
@@ -295,28 +415,91 @@ class InputField:
             resistor.ppm = float(self.p.get())
         except Exception as e:
             resistor.ppm = -1
-        resistor.update('values')
+        resistor.update(m)
         resistor.show()
 
+    
 
-    def show(self):
+
+    def show(self, band):
         self.panel.place(x=0, y=200, anchor="nw")
+
+        if band == 4:
+            self.entry1.place(x=10,y=120,anchor='nw')
+            self.entry1['values'] = self.value_list
+
+            self.entry2.place(x=10,y=190,anchor='nw')
+            self.entry2['values'] = self.value_list
+            
+            self.entry3.place(x=10,y=260,anchor='nw')
+            self.entry3['values'] = self.multiplier_list 
+
+            self.entry4.place(x=10,y=330,anchor='nw')
+            self.entry4['values'] =  self.tolerance_list
+
+            self.label5.place_forget()
+            self.entry5.place_forget()
+            self.label6.place_forget()
+            self.entry6.place_forget()
+        elif band == 5:
+            self.entry1.place(x=10,y=120,anchor='nw')
+            self.entry1['values'] = self.value_list
+
+            self.entry2.place(x=10,y=190,anchor='nw')
+            self.entry2['values'] = self.value_list
+            
+            self.entry3.place(x=10,y=260,anchor='nw')
+            self.entry3['values'] = self.value_list 
+
+            self.entry4.place(x=10,y=330,anchor='nw')
+            self.entry4['values'] =  self.multiplier_list
+
+            self.label5.place(x=10,y=370,anchor='nw')
+            self.entry5.place(x=10,y=400,anchor='nw')
+            self.entry5['values'] =  self.tolerance_list
+
+            self.label6.place_forget()
+            self.entry6.place_forget()
+        elif band == 6:
+            self.entry1.place(x=10,y=120,anchor='nw')
+            self.entry1['values'] = self.value_list
+
+            self.entry2.place(x=10,y=190,anchor='nw')
+            self.entry2['values'] = self.value_list
+            
+            self.entry3.place(x=10,y=260,anchor='nw')
+            self.entry3['values'] = self.value_list 
+
+            self.entry4.place(x=10,y=330,anchor='nw')
+            self.entry4['values'] =  self.multiplier_list
+
+            self.entry5.place(x=10,y=400,anchor='nw')
+            self.entry5['values'] =  self.tolerance_list
+
+            self.label6.place(x=10,y=440,anchor='nw')
+            self.entry6.place(x=10,y=470,anchor='nw')
+            self.entry6['values'] =  self.ppm_list
+    
+
+
         
     def hide(self):
         self.panel.place_forget()
 
 
 input_field = InputField(main_container)
-input_field.show()
+input_field.show(4)
 
 
 ############ Buttons ############
 def show_band4():
     band4.place(x=0, y=200, anchor="nw")
     
-    # resistor.band_values = [1,1,1000000000,0.05,-1,-1]
+    resistor.band_values = [-1,-1,-1,-1,-1,-1]
     resistor.band = 4
 
+    input_field.show(4)
+    input_field.clear_dropdown()
     resistor.update('values')
     resistor.show()
     about_panel.place_forget()
@@ -326,9 +509,11 @@ show_band4_button.place(x=10, y=168, anchor="nw")
 def show_band5():
     band4.place(x=0, y=200, anchor="nw")
     
-    # resistor.band_values = [1,2,3,100000,0.05,-1]
+    resistor.band_values = [-1,-1,-1,-1,-1,-1]
     resistor.band = 5
-    
+
+    input_field.show(5)
+    input_field.clear_dropdown()
     resistor.update('values')
     resistor.show()
     about_panel.place_forget()
@@ -338,9 +523,11 @@ show_band5_button.place(x=170, y=168, anchor="nw")
 def show_band6():
     band4.place(x=0, y=200, anchor="nw")
 
-    # resistor.band_values = [1,2,3,100000,0.05,10]
+    resistor.band_values = [-1,-1,-1,-1,-1,-1]
     resistor.band = 6
 
+    input_field.show(6)
+    input_field.clear_dropdown()
     resistor.update('values')
     resistor.show()
     about_panel.place_forget()
