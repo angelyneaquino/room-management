@@ -27,7 +27,7 @@ title_label.place(relx=0.5, y=50, anchor="center")
 # Resistor band panels
 band4 = Frame(main_container, bg="red", width=500, height=600)
 band4.place(x=0, y=200, anchor="nw")
-about_panel = Frame(main_container, bg="violet", width=1000, height=600)
+# about_panel = Frame(main_container, bg="violet", width=1000, height=600)
 
 
 
@@ -179,6 +179,10 @@ class Resistor:
                 # if self.band == 4:
                 #     if c == 1:
             
+            if self.band_values[0] == -1:
+                raise ValueError("Error")
+
+
             if self.band == 4:
                 self.band1.config(bg=self.band_colors_dict[self.band_values[0]] if self.band_values[0] != -1 else "PeachPuff1")
                 self.band2.config(bg=self.band_colors_dict[self.band_values[1]] if self.band_values[1] != -1 else "PeachPuff1")
@@ -224,7 +228,10 @@ class Resistor:
                     self.ohms_simplified = str(self.ohms_temp/k) + ' ' + self.band_value_prefix_dict[k]
             self.resistor_value.config(text=f"{self.ohms_simplified} Ohms {self.tolerance_temp*100}% Tolerance {'' if self.ppm_temp == -1 else (str(self.ppm_temp)+' PPM')}")
         except Exception as e:
-            self.resistor_value.config(text="Error: "+str(e))
+            if str(e) == "Invalid resistor value for 4-band resistor" or str(e) == "Invalid resistor value":
+                self.resistor_value.config(text="Error: "+str(e))
+            else:
+                self.resistor_value.config(text="-")
     
     def show(self):
         self.panel.place(x=500, y=200, anchor="nw")
@@ -365,18 +372,30 @@ class InputField:
         
 
         
-
+        self.clear_button = Button(self.input_container, text="Clear", command=self.clear_all, font=("Arial", 12), bg="red", height=1, width=16)
+        self.clear_button.place(relx=0.25, y=540, anchor="center")
 
         self.submit_button = Button(self.input_container, text="Enter", command=self.submit, font=("Arial", 12), bg="red", height=1, width=16)
-        self.submit_button.place(relx=0.5, y=540, anchor="center")
+        self.submit_button.place(relx=0.75, y=540, anchor="center")
 
     def clear_dropdown(self):
-            self.e1.set("")
-            self.e2.set("")
-            self.e3.set("")
-            self.e4.set("")
-            self.e5.set("")
-            self.e6.set("")
+        self.e1.set("")
+        self.e2.set("")
+        self.e3.set("")
+        self.e4.set("")
+        self.e5.set("")
+        self.e6.set("")
+
+    def clear_all(self):
+        self.e1.set("")
+        self.e2.set("")
+        self.e3.set("")
+        self.e4.set("")
+        self.e5.set("")
+        self.e6.set("")
+        self.res.set("")
+        self.tol.set("")
+        self.p.set("")
         
     
     def submit(self):
@@ -502,7 +521,7 @@ def show_band4():
     input_field.clear_dropdown()
     resistor.update('values')
     resistor.show()
-    about_panel.place_forget()
+    # about_panel.place_forget()
 show_band4_button = Button(header_panel, text="4-Band Resistor", command=show_band4, font=("Arial", 12), bg="red", height=1, width=16)
 show_band4_button.place(x=10, y=168, anchor="nw")
 
@@ -516,7 +535,7 @@ def show_band5():
     input_field.clear_dropdown()
     resistor.update('values')
     resistor.show()
-    about_panel.place_forget()
+    # about_panel.place_forget()
 show_band5_button = Button(header_panel, text="5-Band Resistor", command=show_band5, font=("Arial", 12), bg="yellow", height=1, width=16)
 show_band5_button.place(x=170, y=168, anchor="nw")
 
@@ -530,14 +549,34 @@ def show_band6():
     input_field.clear_dropdown()
     resistor.update('values')
     resistor.show()
-    about_panel.place_forget()
+    # about_panel.place_forget()
 show_band6_button = Button(header_panel, text="6-Band Resistor", command=show_band6, font=("Arial", 12), bg="orange", height=1, width=16)
 show_band6_button.place(x=330, y=168, anchor="nw")
 
 def show_about_panel():
-    about_panel.place(x=0, y=200, anchor="nw")
-    resistor.hide()
-    band4.place_forget()
+    # about_panel.place(x=0, y=200, anchor="nw")
+    # resistor.hide()
+    # band4.place_forget()
+
+    about_win = Toplevel(window)
+    about_win.title("About")
+    about_win.geometry("300x280")
+    about_win.resizable(False, False)
+
+    # Optional: make sure it stays on top
+    about_win.transient(window)
+    about_win.grab_set()
+
+    # Content
+    Label(about_win, text="Resistor Color Code", font=("Arial", 16, "bold")).pack(pady=10)
+    Label(about_win, text="Version 1.0.0").pack(pady=5)
+    Label(about_win, text="Developed by A. Aquino, G.R. Demate, N. Jacinto,").pack(pady=5)
+    Label(about_win, text="J. Manlapaz, R. Postrero, C.M. Amora").pack(pady=5)
+    Label(about_win, text="").pack(pady=5)
+    Label(about_win, text="© 2025 All rights reserved").pack(pady=5)
+
+    Button(about_win, text="OK", command=about_win.destroy).pack(pady=15)
+
 show_about_panel_button = Button(header_panel, text="About", command=show_about_panel, font=("Arial", 12), bg="violet", height=1, width=16)
 show_about_panel_button.place(x=836, y=168, anchor="nw")
 
